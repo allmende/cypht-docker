@@ -1,0 +1,33 @@
+version: '2'
+networks:
+  frontend-web:
+    external: true
+  backend:
+    driver: bridge
+services:
+  mariadb:
+    image: mariadb:10
+    volumes:
+      - ./mariadb:/var/lib/mysql
+    env_file:
+      - database.env
+    networks:
+      - backend
+    logging:
+      driver: none
+  cypht:
+    image: sailfrog/cypht-docker:latest
+    volumes:
+      - ./cypht/users:/var/lib/hm3/users
+      - ./cypht/attachments:/var/lib/hm3/attachments
+      - ./cypht/app_data:/var/lib/hm3/app_data
+    expose:
+      - "80"
+    env_file:
+      - frontend.env
+      - cypht.env
+    networks:
+      - frontend-web
+      - backend
+    logging:
+      driver: none
